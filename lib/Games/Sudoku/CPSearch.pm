@@ -4,7 +4,7 @@ use warnings;
 use strict;
 use List::MoreUtils qw(all mesh);
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 sub new {
 	my ($class, $puzzle) = @_;
@@ -59,7 +59,6 @@ sub new {
 		_units => \%units,
 		_peers => \%peers,
 		_puzzle => $puzzle,
-		_grid => undef,
 		_solution => $puzzle,
 	};
 
@@ -183,7 +182,7 @@ sub search {
 		my %grid_copy = %$grid;	
 		$result =
 			$self->search($self->assign(\%grid_copy, $fewest_digits, $d));
-		last if defined $result;
+		return $result if defined $result;
 	}
 	return $result;
 }
@@ -208,6 +207,14 @@ sub puzzle {
 	my ($self) = @_;
 	return $self->{_puzzle};
 }
+
+sub set_puzzle {
+	my ($self, $puzzle) = @_;
+	$self->{_puzzle} = $puzzle;
+	return $self->{_puzzle};
+}
+
+1; # End of Games::Sudoku::CPSearch
 
 =head1 NAME
 
@@ -240,6 +247,9 @@ Returns a hash with squares as keys and "123456789" as each value.
 
 =item puzzle
 Returns the puzzle as an 81 character string.
+
+=item set_puzzle
+Sets the puzzle to be solved
 
 =item unitlist
 Returns an list of sudoku "units": rows, columns, boxes
@@ -331,6 +341,8 @@ L<http://search.cpan.org/dist/Games-Sudoku-CPSearch>
 
 =head1 ACKNOWLEDGEMENTS
 
+Peter Norvig, for the explanation and python code at
+http://www.norvig.com/sudoku.html
 
 =head1 COPYRIGHT & LICENSE
 
@@ -339,7 +351,4 @@ Copyright 2008 Martin-Louis Bright, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
-
-1; # End of Games::Sudoku::CPSearch
