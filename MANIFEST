@@ -1,0 +1,14 @@
+Build.PL
+Changes
+MANIFEST
+README
+lib/Games/Sudoku/CPSearch.pm
+t/00-load.t
+t/01-scaffold.t
+t/02-easy.t
+t/03-hard.t
+t/04-stress.t
+t/pod-coverage.t
+t/pod.t
+Makefile.PL
+META.yml
