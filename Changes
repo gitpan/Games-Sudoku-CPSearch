@@ -1,5 +1,5 @@
 Revision history for Games-Sudoku-CPSearch
 
-0.01    Date/time
-        First version, released on an unsuspecting world.
-
+0.05    2008-03-30
+        better documentation, minor changes to the solve function,
+				more robust input checking

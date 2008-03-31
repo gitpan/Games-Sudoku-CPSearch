@@ -29,8 +29,7 @@ is($sudoku->solution(), $s);
 while (scalar(@z) > 0) {
 	($p, $s) = splice(@z, 0, 2);
 	$sudoku->set_puzzle($p);
-	$sudoku->solve();
-	is($sudoku->solution(), $s);
+	is($sudoku->solve(), $s);
 }
 
 __DATA__

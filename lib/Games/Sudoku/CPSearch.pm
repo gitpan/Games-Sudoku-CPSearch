@@ -2,14 +2,18 @@ package Games::Sudoku::CPSearch;
 
 use warnings;
 use strict;
+use 5.008;
 use List::MoreUtils qw(all mesh);
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub new {
 	my ($class, $puzzle) = @_;
 
-	$puzzle =~ s/[^\d\.\-]//;
+	return undef
+		unless ((length($puzzle) == 81) && ($puzzle =~ /^[\d\.\-]+$/)); 
+
+	$puzzle =~ s/0/\./g; # 0 is a digit, which makes things hairy.
 
 	my $rows = [qw(A B C D E F G H I)];
 	my $cols = [qw(1 2 3 4 5 6 7 8 9)];
@@ -59,7 +63,7 @@ sub new {
 		_units => \%units,
 		_peers => \%peers,
 		_puzzle => $puzzle,
-		_solution => $puzzle,
+		_solution => "",
 	};
 
 	bless $self, $class;
@@ -196,11 +200,11 @@ sub solve {
 	my ($self) = @_;
 	my $solution = $self->search($self->propagate());
 	return undef unless (defined $solution);
-	my $solved = "";
+	$self->{_solution} = "";
 	foreach my $s ($self->squares()) {
-		$solved .= $solution->{$s};
+		$self->{_solution} .= $solution->{$s};
 	}
-	$self->{_solution} = $solved;
+	return $self->{_solution};
 }
 
 sub puzzle {
@@ -218,81 +222,140 @@ sub set_puzzle {
 
 =head1 NAME
 
-Games::Sudoku::CPSearch - A fast technique to solve Sudoku problems.
+Games::Sudoku::CPSearch - Solve Sudoku problems quickly.
 
 =head1 VERSION
 
-Version 0.03
+Version 0.05
 
 =cut
 
 =head1 SYNOPSIS
 
+	use Games::Sudoku::CPSearch;
 
-    use Games::Sudoku::CPSearch;
+	my $puzzle = <<PUZZLE;
+	4.....8.5
+	.3.......
+	...7.....
+	.2.....6.
+	....8.4..
+	....1....
+	...6.3.7.
+	5..2.....
+	1.4......
+	PUZZLE
 
-    my $foo = Games::Sudoku::CPSearch->new($puzzle);
-		$foo->solve();
-		my $solution = $foo->solution();
-    ...
+	$puzzle =~ s/\s//g;
+
+	my $solved = <<SOLVED;
+	417369825
+	632158947
+	958724316
+	825437169
+	791586432
+	346912758
+	289643571
+	573291684
+	164875293
+	SOLVED
+
+	$solved =~ s/\s//g;
+
+	my $sudoku = Games::Sudoku::CPSearch->new($puzzle);
+	die "bad puzzle" unless defined $sudoku;
+	$sudoku->solve();
+	print $sudoku->solution(), "\n";
 
 =head1 DESCRIPTION
 
 This module solves a Sudoku puzzle using the same constraint propagation technique/algorithm explained on Peter Norvig's website (http://norvig.com/sudoku.html), and implemented there in Python.
 
+=head1 METHODS
+
 =over 4
 
-=item fullgrid
+=item $sudoku_object = Games::Sudoku::CPSearch->new($puzzle)
+
+Initialize Sudoku object: the only parameter is the 81 character string
+representing the puzzle. The only characters allowed are [0-9\.\-].
+
+=item $sudoku_object->solve()
+
+Solves the puzzle. Returns the solution as a flat 81 character string.
+
+=item $sudoku_object->set_puzzle($puzzle)
+
+Sets the puzzle to be solved. You can then reuse the object:
+
+	my $o = Games::Sudoku::CPSearch->new($first_puzzle);
+	print $o->solve(), "\n";
+	$o->set_puzzle($another_puzzle);
+	print $o->solve(), "\n";
+
+=item $o->solution()
+
+Returns the solution string, or the empty string if there is no solution.
+
+=back
+
+=head1 INTERNAL METHODS
+
+These methods are exposed but are not intended to be used.
+
+=over 4
+
+=item $o->fullgrid()
 Returns a hash with squares as keys and "123456789" as each value.
 
-=item puzzle
-Returns the puzzle as an 81 character string.
+=item $o->puzzle()
 
-=item set_puzzle
-Sets the puzzle to be solved
+Returns the object's puzzle as an 81 character string.
 
-=item unitlist
-Returns an list of sudoku "units": rows, columns, boxes
+=item $o->unitlist($square)
 
-=item propagate
+Returns an list of sudoku "units": rows, columns, boxes for a given square.
+
+=item $o->propagate()
+
 Perform the constraint propagation on the Sudoku grid.
 
-=item eliminate
-Eliminate digit from cell
+=item $o->eliminate($grid, $square, $digit)
 
-=item assign
-Assign digit to cell
+Eliminate digit from the square in the grid.
 
-=item new
-Initialize Sudoku object: the only parameter is the 81 character string
-representing the puzzle. The only characters allowed are [0-9\.-]
+=item $o->assign($grid, $square, $digit)
 
-=item rows
-Return row values: A-I
+Assign digit to square in grid. Mutually recursive with eliminate().
 
-=item cols
-Return column values: 1-9
+=item $o->rows()
 
-=item squares
-Return list of all the squares in a Sudoku grid.
+Returns array of row values: A-I
 
-=item units
+=item $o->cols()
+
+Returns array of column values: 1-9
+
+=item $o->squares()
+
+Return list of all the squares in a Sudoku grid:
+A1, A2, ..., A9, B1, ..., I1, ..., I9
+
+=item $o->units($square)
+
 Return list of all the units for a given square.
 
-=item peers
+=item $o->peers($square)
+
 Return list of all the peers for a given square.
 
-=item search
-Perform search for a given grid.
+=item $o->search()
 
-=item solve
-Solve the puzzle.
+Perform search for a given grid after constraint propagation. 
 
-=item cross
-Return "cross product".
+=item $o->cross()
 
-=item solution
-Return solution string.
+Return "cross product" of 2 arrays.
 
 =back
 
