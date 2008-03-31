@@ -1,5 +1,8 @@
 Revision history for Games-Sudoku-CPSearch
 
+0.06    2008-03-31
+				initialization is through the set_puzzle method, not new()
+
 0.05    2008-03-30
         better documentation, minor changes to the solve function,
 				more robust input checking

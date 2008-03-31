@@ -18,16 +18,13 @@ while ($line = <DATA>) {
 }
 
 my @z = mesh(@problems, @solutions);
-my ($p, $s) = splice(@z, 0, 2);
 
 # first puzzle
-my $sudoku = Games::Sudoku::CPSearch->new($p);
-$sudoku->solve();
-is($sudoku->solution(), $s);
+my $sudoku = Games::Sudoku::CPSearch->new();
 
 # rest of the puzzles...
 while (scalar(@z) > 0) {
-	($p, $s) = splice(@z, 0, 2);
+	my ($p, $s) = splice(@z, 0, 2);
 	$sudoku->set_puzzle($p);
 	is($sudoku->solve(), $s);
 }

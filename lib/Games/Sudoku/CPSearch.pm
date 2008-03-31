@@ -5,15 +5,10 @@ use strict;
 use 5.008;
 use List::MoreUtils qw(all mesh);
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub new {
 	my ($class, $puzzle) = @_;
-
-	return undef
-		unless ((length($puzzle) == 81) && ($puzzle =~ /^[\d\.\-]+$/)); 
-
-	$puzzle =~ s/0/\./g; # 0 is a digit, which makes things hairy.
 
 	my $rows = [qw(A B C D E F G H I)];
 	my $cols = [qw(1 2 3 4 5 6 7 8 9)];
@@ -214,6 +209,11 @@ sub puzzle {
 
 sub set_puzzle {
 	my ($self, $puzzle) = @_;
+	return undef
+		unless ((length($puzzle) == 81) && ($puzzle =~ /^[\d\.\-]+$/)); 
+
+	$puzzle =~ s/0/\./g; # 0 is a digit, which makes things hairy.
+
 	$self->{_puzzle} = $puzzle;
 	return $self->{_puzzle};
 }
@@ -226,7 +226,7 @@ Games::Sudoku::CPSearch - Solve Sudoku problems quickly.
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
@@ -262,8 +262,8 @@ Version 0.05
 
 	$solved =~ s/\s//g;
 
-	my $sudoku = Games::Sudoku::CPSearch->new($puzzle);
-	die "bad puzzle" unless defined $sudoku;
+	my $sudoku = Games::Sudoku::CPSearch->new();
+	die "bad puzzle" unless defined $sudoku->set_puzzle($puzzle);
 	$sudoku->solve();
 	print $sudoku->solution(), "\n";
 
@@ -275,10 +275,9 @@ This module solves a Sudoku puzzle using the same constraint propagation techniq
 
 =over 4
 
-=item $sudoku_object = Games::Sudoku::CPSearch->new($puzzle)
+=item $sudoku_object = Games::Sudoku::CPSearch->new()
 
-Initialize Sudoku object: the only parameter is the 81 character string
-representing the puzzle. The only characters allowed are [0-9\.\-].
+Initializes the sudoku solving framework.
 
 =item $sudoku_object->solve()
 
@@ -286,9 +285,12 @@ Solves the puzzle. Returns the solution as a flat 81 character string.
 
 =item $sudoku_object->set_puzzle($puzzle)
 
+Sets the puzzle to be solved. The only parameter is the 81 character string
+representing the puzzle. The only characters allowed are [0-9\.\-].
 Sets the puzzle to be solved. You can then reuse the object:
 
-	my $o = Games::Sudoku::CPSearch->new($first_puzzle);
+	my $o = Games::Sudoku::CPSearch->new();
+	$o->set_puzzle($puzzle);
 	print $o->solve(), "\n";
 	$o->set_puzzle($another_puzzle);
 	print $o->solve(), "\n";
@@ -404,8 +406,8 @@ L<http://search.cpan.org/dist/Games-Sudoku-CPSearch>
 
 =head1 ACKNOWLEDGEMENTS
 
-Peter Norvig, for the explanation and python code at
-http://www.norvig.com/sudoku.html
+Peter Norvig, for the explanation/tutorial and python code at
+http://www.norvig.com/sudoku.html.
 
 =head1 COPYRIGHT & LICENSE
 

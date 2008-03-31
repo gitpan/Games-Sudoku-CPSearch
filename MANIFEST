@@ -8,6 +8,9 @@ t/01-scaffold.t
 t/02-easy.t
 t/03-hard.t
 t/04-stress.t
+t/05-empty.t
+t/06-zeroes.t
+t/07-demo.t
 t/pod-coverage.t
 t/pod.t
 Makefile.PL
