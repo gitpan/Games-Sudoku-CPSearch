@@ -5,7 +5,7 @@ use strict;
 use 5.008;
 use List::MoreUtils qw(all mesh);
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 sub new {
 	my ($class) = @_;
@@ -57,7 +57,7 @@ sub new {
 		_squares => $squares,
 		_units => \%units,
 		_peers => \%peers,
-		_puzzle => "",
+		_puzzle => undef,
 		_solution => "",
 	};
 
@@ -116,6 +116,8 @@ sub fullgrid {
 
 sub propagate {
 	my ($self) = @_;
+	return undef unless defined $self->puzzle();
+	return undef unless defined $self->puzzle();
 	my @d = split(//, $self->puzzle);
 	my @s = $self->squares();
 	my @z = mesh @s, @d;
@@ -226,7 +228,7 @@ Games::Sudoku::CPSearch - Solve Sudoku problems quickly.
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =cut
 
