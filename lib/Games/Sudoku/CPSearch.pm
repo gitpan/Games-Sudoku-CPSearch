@@ -5,10 +5,10 @@ use strict;
 use 5.008;
 use List::MoreUtils qw(all mesh);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 sub new {
-	my ($class, $puzzle) = @_;
+	my ($class) = @_;
 
 	my $rows = [qw(A B C D E F G H I)];
 	my $cols = [qw(1 2 3 4 5 6 7 8 9)];
@@ -57,7 +57,7 @@ sub new {
 		_squares => $squares,
 		_units => \%units,
 		_peers => \%peers,
-		_puzzle => $puzzle,
+		_puzzle => "",
 		_solution => "",
 	};
 
@@ -226,7 +226,7 @@ Games::Sudoku::CPSearch - Solve Sudoku problems quickly.
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 
