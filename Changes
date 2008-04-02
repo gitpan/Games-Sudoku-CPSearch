@@ -1,5 +1,9 @@
 Revision history for Games-Sudoku-CPSearch
 
+0.09    2008-04-01
+				added verify() method (changed empty puzzle test)
+				require perl 5.10
+
 0.08    2008-03-31
 				empty puzzle problem: puzzle is now undef upon new()
 

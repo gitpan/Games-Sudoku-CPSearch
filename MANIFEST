@@ -11,6 +11,7 @@ t/04-stress.t
 t/05-empty.t
 t/06-zeroes.t
 t/07-demo.t
+t/08-verify.t
 t/pod-coverage.t
 t/pod.t
 Makefile.PL

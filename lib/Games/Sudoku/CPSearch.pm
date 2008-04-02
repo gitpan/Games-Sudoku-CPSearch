@@ -2,10 +2,10 @@ package Games::Sudoku::CPSearch;
 
 use warnings;
 use strict;
-use 5.008;
+use 5.010;
 use List::MoreUtils qw(all mesh);
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub new {
 	my ($class) = @_;
@@ -213,11 +213,18 @@ sub set_puzzle {
 	my ($self, $puzzle) = @_;
 	return undef
 		unless ((length($puzzle) == 81) && ($puzzle =~ /^[\d\.\-]+$/)); 
-
 	$puzzle =~ s/0/\./g; # 0 is a digit, which makes things hairy.
-
 	$self->{_puzzle} = $puzzle;
 	return $self->{_puzzle};
+}
+
+sub verify {
+	my ($self, $puzzle) = @_;
+	for (1..9) {
+		my $count = () = $puzzle =~ /$_/g;
+		return undef unless $count == 9;
+	}
+	return 1;
 }
 
 1; # End of Games::Sudoku::CPSearch
@@ -228,7 +235,7 @@ Games::Sudoku::CPSearch - Solve Sudoku problems quickly.
 
 =head1 VERSION
 
-Version 0.08
+Version 0.09
 
 =cut
 
@@ -310,6 +317,7 @@ These methods are exposed but are not intended to be used.
 =over 4
 
 =item $o->fullgrid()
+
 Returns a hash with squares as keys and "123456789" as each value.
 
 =item $o->puzzle()
@@ -361,6 +369,10 @@ Perform search for a given grid after constraint propagation.
 
 Return "cross product" of 2 arrays.
 
+=item $o->verify($solution)
+
+Returns undef if the sudoku solution is not valid. Returns 1 if it is. 
+
 =back
 
 =head1 AUTHOR
@@ -372,9 +384,6 @@ Martin-Louis Bright, C<< <mlbright at gmail.com> >>
 Please report any bugs or feature requests to C<bug-games-sudoku-cpsearch at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Games-Sudoku-CPSearch>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-
-
 
 =head1 SUPPORT
 
