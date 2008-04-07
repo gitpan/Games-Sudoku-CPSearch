@@ -34,8 +34,7 @@ $solved =~ s/\s//g;
 my $sudoku = Games::Sudoku::CPSearch->new();
 my $success = 0;
 if (defined $sudoku->set_puzzle($puzzle)) {
-	$sudoku->solve();
-	if ($sudoku->solution() eq $solved) {
+	if ($sudoku->solve() eq $solved) {
 		$success = 1;
 	}
 }

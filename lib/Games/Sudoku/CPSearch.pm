@@ -2,10 +2,10 @@ package Games::Sudoku::CPSearch;
 
 use warnings;
 use strict;
-use 5.010;
+use 5.008;
 use List::MoreUtils qw(all mesh);
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 sub new {
 	my ($class) = @_;
@@ -257,24 +257,9 @@ Version 0.09
 
 	$puzzle =~ s/\s//g;
 
-	my $solved = <<SOLVED;
-	417369825
-	632158947
-	958724316
-	825437169
-	791586432
-	346912758
-	289643571
-	573291684
-	164875293
-	SOLVED
-
-	$solved =~ s/\s//g;
-
 	my $sudoku = Games::Sudoku::CPSearch->new();
 	die "bad puzzle" unless defined $sudoku->set_puzzle($puzzle);
-	$sudoku->solve();
-	print $sudoku->solution(), "\n";
+	print $sudoku->solve(), "\n";
 
 =head1 DESCRIPTION
 
