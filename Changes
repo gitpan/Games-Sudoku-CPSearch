@@ -1,5 +1,8 @@
 Revision history for Games-Sudoku-CPSearch
 
+0.11    2008-04-27
+				added build prerequisite for List::MoreUtils
+
 0.09    2008-04-01
 				added verify() method (changed empty puzzle test)
 				require perl 5.10
