@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Games/Sudoku/CPSearch.pm',
     build_requires => {
         'Test::More' => 0,
+		'List::MoreUtils' => 0,
     },
     add_to_cleanup      => [ 'Games-Sudoku-CPSearch-*' ],
     create_makefile_pl => 'traditional',
