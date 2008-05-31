@@ -1,6 +1,6 @@
 ---
 name: Games-Sudoku-CPSearch
-version: 0.12
+version: 0.13
 author:
   - 'Martin-Louis Bright <mlbright@gmail.com>'
 abstract: Solve Sudoku problems quickly.
@@ -13,8 +13,8 @@ build_requires:
 provides:
   Games::Sudoku::CPSearch:
     file: lib/Games/Sudoku/CPSearch.pm
-    version: 0.12
-generated_by: Module::Build version 0.2808
+    version: 0.13
+generated_by: Module::Build version 0.280801
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

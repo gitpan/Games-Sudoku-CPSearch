@@ -9,8 +9,8 @@ my $easy_solved = "4839216579673458212518764935481329767295641381367982453726895
 my $o = Games::Sudoku::CPSearch->new();
 $o->set_puzzle($easy_unsolved);
 
-is(join("", @{$o->rows()}),"ABCDEFGHI");
-is(join("", @{$o->cols()}),"123456789");
+is(join("", @{$o->_rows()}),"ABCDEFGHI");
+is(join("", @{$o->_cols()}),"123456789");
 
 my $cross = <<END;
 A1A2A3A4A5A6A7A8A9B1B2B3B4B5B6B7B8B9
@@ -21,32 +21,32 @@ I1I2I3I4I5I6I7I8I9
 END
 
 $cross =~ s/\s//g;
-is(join("", $o->squares()), $cross);
-is($o->puzzle(), $easy_unsolved);
+is(join("", $o->_squares()), $cross);
+is($o->_puzzle(), $easy_unsolved);
 
 =pod
 # unitlist
 diag("unitlist:\n");
-foreach my $u ($o->unitlist()) {
+foreach my $u ($o->_unitlist()) {
 	diag(join(",", @$u) . "\n");
 }
 
 # units
 diag("units:\n");
-foreach my $s ($o->squares()) {
-	foreach my $u ($o->units($s)) {
+foreach my $s ($o->_squares()) {
+	foreach my $u ($o->_units($s)) {
 		diag($s . " " . join(",",@$u) . "\n");
 	}
 }
 
 # peers
 diag("peers:\n");
-foreach my $s ($o->squares()) {
+foreach my $s ($o->_squares()) {
 	my $output = "$s ";
-	$output .= join(",", $o->peers($s));
+	$output .= join(",", $o->_peers($s));
 	diag("$output\n");
 }
 
-diag($o->solution($o->fullgrid()));
-diag($o->solution($o->assign($o->fullgrid(),'I9','9')));
+diag($o->_solution($o->_fullgrid()));
+diag($o->_solution($o->_assign($o->_fullgrid(),'I9','9')));
 =cut

@@ -8,4 +8,4 @@ my $empty = "...................................................................
 my $oempty = Games::Sudoku::CPSearch->new();
 $oempty->set_puzzle($empty);
 $oempty->solve();
-is($oempty->verify($oempty->solution()),1);
+is($oempty->_verify($oempty->solution()),1);

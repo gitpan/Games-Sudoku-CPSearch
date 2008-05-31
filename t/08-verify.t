@@ -18,5 +18,5 @@ SOLVED
 $solved =~ s/\s//g;
 
 my $sudoku = Games::Sudoku::CPSearch->new();
-my $verified = $sudoku->verify($solved);
+my $verified = $sudoku->_verify($solved);
 is($verified, 1);
