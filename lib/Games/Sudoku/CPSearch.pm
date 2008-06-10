@@ -5,24 +5,20 @@ use strict;
 use 5.008;
 use List::MoreUtils qw(all mesh);
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 # Public methods
 
 sub new {
-	my ($class) = @_;
+	my ($class, $puzzle) = @_;
 
 	my $rows = [qw(A B C D E F G H I)];
 	my $cols = [qw(1 2 3 4 5 6 7 8 9)];
 	my $squares = $class->_cross($rows, $cols);
 
 	my @unitlist = ();
-	foreach my $c (@$cols) {
-		push @unitlist, $class->_cross($rows, [$c]);
-	}
-	foreach my $r (@$rows) {
-		push @unitlist, $class->_cross([$r], $cols);
-	}
+	push @unitlist, $class->_cross($rows, [$_]) for @$cols;
+	push @unitlist, $class->_cross([$_], $cols) for @$rows;
 	foreach my $r ([qw(A B C)],[qw(D E F)],[qw(G H I)]) {
 		foreach my $c ([qw(1 2 3)],[qw(4 5 6)],[qw(7 8 9)]) {
 			push @unitlist, $class->_cross($r, $c);	
@@ -64,6 +60,8 @@ sub new {
 	};
 
 	bless $self, $class;
+	$self->set_puzzle($puzzle) if defined $puzzle;
+	return $self;
 }
 
 sub solution {
@@ -76,9 +74,7 @@ sub solve {
 	my $solution = $self->_search($self->_propagate());
 	return undef unless (defined $solution);
 	$self->{_solution} = "";
-	foreach my $s ($self->_squares()) {
-		$self->{_solution} .= $solution->{$s};
-	}
+	$self->{_solution} .= $solution->{$_} for ($self->_squares());
 	return $self->{_solution};
 }
 
@@ -91,7 +87,7 @@ sub set_puzzle {
 	return $self->{_puzzle};
 }
 
-# private methods
+# internal methods
 
 sub _unitlist {
 	my ($self) = @_;
@@ -137,15 +133,12 @@ sub _cross {
 sub _fullgrid {
 	my ($self) = @_;
 	my %grid;
-	foreach my $s ($self->_squares()) {
-		$grid{$s} = "123456789";
-	}
+	$grid{$_} = "123456789" for ($self->_squares());
 	return \%grid;
 }
 
 sub _propagate {
 	my ($self) = @_;
-	return undef unless defined $self->_puzzle();
 	return undef unless defined $self->_puzzle();
 	my @d = split(//, $self->_puzzle());
 	my @s = $self->_squares();
@@ -174,9 +167,8 @@ sub _assign {
 
 sub _eliminate {
 	my ($self, $grid, $s, $d) = @_;
-	unless ((defined $grid->{$s}) && ($grid->{$s} =~ /$d/)) {
-		return $grid;
-	}
+	return $grid
+		unless ((defined $grid->{$s}) && ($grid->{$s} =~ /$d/));
 	$grid->{$s} =~ s/$d//;
 	my $len = length($grid->{$s});
 	return undef if ($len == 0);
@@ -238,7 +230,7 @@ Games::Sudoku::CPSearch - Solve Sudoku problems quickly.
 
 =head1 VERSION
 
-Version 0.13
+Version 0.14
 
 =cut
 
@@ -260,8 +252,7 @@ Version 0.13
 
 	$puzzle =~ s/\s//g;
 
-	my $sudoku = Games::Sudoku::CPSearch->new();
-	die "bad puzzle" unless defined $sudoku->set_puzzle($puzzle);
+	my $sudoku = Games::Sudoku::CPSearch->new($puzzle);
 	print $sudoku->solve(), "\n";
 
 =head1 DESCRIPTION
@@ -272,27 +263,26 @@ This module solves a Sudoku puzzle using the same constraint propagation techniq
 
 =over 4
 
-=item $sudoku_object = Games::Sudoku::CPSearch->new()
+=item $o = Games::Sudoku::CPSearch->new()
 
 Initializes the sudoku solving framework.
 
-=item $sudoku_object->solve()
+=item $o->solve()
 
 Solves the puzzle. Returns the solution as a flat 81 character string.
 
-=item $sudoku_object->set_puzzle($puzzle)
+=item $o->set_puzzle($puzzle)
 
 Sets the puzzle to be solved. The only parameter is the 81 character string
 representing the puzzle. The only characters allowed are [0-9\.\-].
 Sets the puzzle to be solved. You can then reuse the object:
 
-	my $o = Games::Sudoku::CPSearch->new();
-	$o->set_puzzle($puzzle);
+	my $o = Games::Sudoku::CPSearch->new($puzzle);
 	print $o->solve(), "\n";
 	$o->set_puzzle($another_puzzle);
 	print $o->solve(), "\n";
 
-=item $sudoku_object->solution()
+=item $o->solution()
 
 Returns the solution string, or the empty string if there is no solution.
 
@@ -304,60 +294,60 @@ These methods are exposed but are not intended to be used.
 
 =over 4
 
-=item $o->fullgrid()
+=item $o->_fullgrid()
 
 Returns a hash with squares as keys and "123456789" as each value.
 
-=item $o->puzzle()
+=item $o->_puzzle()
 
 Returns the object's puzzle as an 81 character string.
 
-=item $o->unitlist($square)
+=item $o->_unitlist($square)
 
 Returns an list of sudoku "units": rows, columns, boxes for a given square.
 
-=item $o->propagate()
+=item $o->_propagate()
 
 Perform the constraint propagation on the Sudoku grid.
 
-=item $o->eliminate($grid, $square, $digit)
+=item $o->_eliminate($grid, $square, $digit)
 
 Eliminate digit from the square in the grid.
 
-=item $o->assign($grid, $square, $digit)
+=item $o->_assign($grid, $square, $digit)
 
 Assign digit to square in grid. Mutually recursive with eliminate().
 
-=item $o->rows()
+=item $o->_rows()
 
 Returns array of row values: A-I
 
-=item $o->cols()
+=item $o->_cols()
 
 Returns array of column values: 1-9
 
-=item $o->squares()
+=item $o->_squares()
 
 Return list of all the squares in a Sudoku grid:
 A1, A2, ..., A9, B1, ..., I1, ..., I9
 
-=item $o->units($square)
+=item $o->_units($square)
 
 Return list of all the units for a given square.
 
-=item $o->peers($square)
+=item $o->_peers($square)
 
 Return list of all the peers for a given square.
 
-=item $o->search()
+=item $o->_search()
 
 Perform search for a given grid after constraint propagation. 
 
-=item $o->cross()
+=item $o->_cross()
 
 Return "cross product" of 2 arrays.
 
-=item $o->verify($solution)
+=item $o->_verify($solution)
 
 Returns undef if the sudoku solution is not valid. Returns 1 if it is. 
 

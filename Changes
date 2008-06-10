@@ -1,5 +1,11 @@
 Revision history for Games-Sudoku-CPSearch
 
+0.14		2008-06-10
+				saner initialisation
+
+0.13		2008-05-30
+				added underscores to the name of the internal sub-routines
+
 0.12    2008-05-09
 				added build prerequisites to Build.PL
 
