@@ -1,20 +1,22 @@
 ---
-name: Games-Sudoku-CPSearch
-version: 0.14
+abstract: 'Solve Sudoku problems quickly.'
 author:
   - 'Martin-Louis Bright <mlbright@gmail.com>'
-abstract: Solve Sudoku problems quickly.
-license: perl
-resources:
-  license: http://dev.perl.org/licenses/
 build_requires:
   List::MoreUtils: 0
   Test::More: 0
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3607'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Games-Sudoku-CPSearch
 provides:
   Games::Sudoku::CPSearch:
     file: lib/Games/Sudoku/CPSearch.pm
-    version: 0.14
-generated_by: Module::Build version 0.2808
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+    version: 0.15
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.15
