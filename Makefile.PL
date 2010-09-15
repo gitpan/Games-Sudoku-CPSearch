@@ -2,14 +2,14 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-  'PL_FILES' => {},
-  'INSTALLDIRS' => 'site',
-  'NAME' => 'Games::Sudoku::CPSearch',
-  'EXE_FILES' => [],
-  'VERSION_FROM' => 'lib/Games/Sudoku/CPSearch.pm',
-  'PREREQ_PM' => {
-                   'Test::More' => 0,
-                   'List::MoreUtils' => 0
-                 }
-)
+          'PL_FILES' => {},
+          'INSTALLDIRS' => 'site',
+          'NAME' => 'Games::Sudoku::CPSearch',
+          'EXE_FILES' => [],
+          'VERSION_FROM' => 'lib/Games/Sudoku/CPSearch.pm',
+          'PREREQ_PM' => {
+                           'Test::More' => 0,
+                           'List::MoreUtils' => 0
+                         }
+        )
 ;
